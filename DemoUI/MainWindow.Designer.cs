@@ -40,6 +40,9 @@ namespace DemoUI
         private async void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             connectButton = new Button();
             logBox = new TextBox();
             aptosInfoBox = new RichTextBox();
@@ -58,25 +61,32 @@ namespace DemoUI
             // connectButton
             // 
             connectButton.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            connectButton.BackColor = System.Drawing.Color.FromArgb(49, 195, 183);
+            connectButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption;
+            connectButton.FlatAppearance.BorderSize = 0;
+            connectButton.FlatStyle = FlatStyle.Popup;
             connectButton.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            connectButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             connectButton.Location = new System.Drawing.Point(9, 1008);
             connectButton.Margin = new Padding(4);
             connectButton.Name = "connectButton";
             connectButton.Size = new System.Drawing.Size(1918, 50);
             connectButton.TabIndex = 5;
             connectButton.Text = "CONNECT VPN";
-            connectButton.UseVisualStyleBackColor = true;
+            connectButton.UseVisualStyleBackColor = false;
             connectButton.Click += connectButton_Click;
             // 
             // logBox
             // 
             logBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            logBox.BackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            logBox.BorderStyle = BorderStyle.None;
+            logBox.ForeColor = System.Drawing.Color.FromArgb(49, 195, 183);
             logBox.Location = new System.Drawing.Point(9, 1064);
             logBox.Margin = new Padding(2);
             logBox.Multiline = true;
             logBox.Name = "logBox";
             logBox.ReadOnly = true;
-            logBox.ScrollBars = ScrollBars.Vertical;
             logBox.Size = new System.Drawing.Size(1481, 169);
             logBox.TabIndex = 4;
             logBox.TabStop = false;
@@ -84,12 +94,14 @@ namespace DemoUI
             // 
             // aptosInfoBox
             // 
-            aptosInfoBox.BackColor = System.Drawing.SystemColors.Window;
+            aptosInfoBox.BackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            aptosInfoBox.BorderStyle = BorderStyle.None;
+            aptosInfoBox.ForeColor = System.Drawing.Color.FromArgb(49, 195, 183);
             aptosInfoBox.Location = new System.Drawing.Point(1495, 1064);
             aptosInfoBox.Name = "aptosInfoBox";
             aptosInfoBox.Size = new System.Drawing.Size(432, 169);
             aptosInfoBox.TabIndex = 6;
-            aptosInfoBox.Text = "Wallet Address:\n0x1231231231231231231231231232\n\nAptos: 1.023";
+            aptosInfoBox.Text = "";
             aptosInfoBox.TextChanged += aptosInfoBox_TextChanged;
             // 
             // vpnList
@@ -98,19 +110,51 @@ namespace DemoUI
             vpnList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             vpnList.AutoGenerateColumns = false;
             vpnList.BackgroundColor = System.Drawing.SystemColors.ActiveCaptionText;
+            vpnList.BorderStyle = BorderStyle.None;
+            vpnList.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
             vpnList.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
-            vpnList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            vpnList.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            vpnList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            vpnList.ColumnHeadersHeight = 80;
             vpnList.Columns.AddRange(new DataGridViewColumn[] { nameDataGridViewTextBoxColumn, priceDataGridViewTextBoxColumn, countryDataGridViewTextBoxColumn, addressDataGridViewTextBoxColumn, sellerDataGridViewTextBoxColumn, objectIdDataGridViewTextBoxColumn });
             vpnList.Cursor = Cursors.Hand;
             vpnList.DataSource = vPNProviderBindingSource;
-            vpnList.Location = new System.Drawing.Point(9, 12);
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(49, 195, 183);
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(49, 195, 183);
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            vpnList.DefaultCellStyle = dataGridViewCellStyle2;
+            vpnList.EnableHeadersVisualStyles = false;
+            vpnList.GridColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            vpnList.Location = new System.Drawing.Point(13, 12);
             vpnList.MultiSelect = false;
             vpnList.Name = "vpnList";
             vpnList.ReadOnly = true;
+            vpnList.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(8, 26, 30);
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(49, 195, 183);
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            vpnList.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            vpnList.RowHeadersVisible = false;
             vpnList.RowHeadersWidth = 62;
             vpnList.RowTemplate.DividerHeight = 1;
             vpnList.RowTemplate.Height = 33;
             vpnList.RowTemplate.Resizable = DataGridViewTriState.True;
+            vpnList.ScrollBars = ScrollBars.Vertical;
             vpnList.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             vpnList.Size = new System.Drawing.Size(1914, 989);
             vpnList.TabIndex = 7;
@@ -123,7 +167,7 @@ namespace DemoUI
             nameDataGridViewTextBoxColumn.MinimumWidth = 8;
             nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
             nameDataGridViewTextBoxColumn.ReadOnly = true;
-            nameDataGridViewTextBoxColumn.Width = 150;
+            nameDataGridViewTextBoxColumn.Width = 170;
             // 
             // priceDataGridViewTextBoxColumn
             // 
@@ -141,7 +185,7 @@ namespace DemoUI
             countryDataGridViewTextBoxColumn.MinimumWidth = 8;
             countryDataGridViewTextBoxColumn.Name = "countryDataGridViewTextBoxColumn";
             countryDataGridViewTextBoxColumn.ReadOnly = true;
-            countryDataGridViewTextBoxColumn.Width = 150;
+            countryDataGridViewTextBoxColumn.Width = 120;
             // 
             // addressDataGridViewTextBoxColumn
             // 
@@ -160,7 +204,7 @@ namespace DemoUI
             sellerDataGridViewTextBoxColumn.MinimumWidth = 8;
             sellerDataGridViewTextBoxColumn.Name = "sellerDataGridViewTextBoxColumn";
             sellerDataGridViewTextBoxColumn.ReadOnly = true;
-            sellerDataGridViewTextBoxColumn.Width = 700;
+            sellerDataGridViewTextBoxColumn.Width = 750;
             // 
             // objectIdDataGridViewTextBoxColumn
             // 
@@ -169,11 +213,12 @@ namespace DemoUI
             objectIdDataGridViewTextBoxColumn.MinimumWidth = 8;
             objectIdDataGridViewTextBoxColumn.Name = "objectIdDataGridViewTextBoxColumn";
             objectIdDataGridViewTextBoxColumn.ReadOnly = true;
-            objectIdDataGridViewTextBoxColumn.Width = 700;
+            objectIdDataGridViewTextBoxColumn.Width = 740;
             // 
             // vPNProviderBindingSource
             // 
             vPNProviderBindingSource.DataSource = typeof(VPNProvider);
+            vPNProviderBindingSource.CurrentChanged += vPNProviderBindingSource_CurrentChanged;
             // 
             // MainWindow
             // 
@@ -185,10 +230,12 @@ namespace DemoUI
             Controls.Add(aptosInfoBox);
             Controls.Add(logBox);
             Controls.Add(connectButton);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            ForeColor = System.Drawing.Color.FromArgb(49, 195, 183);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Margin = new Padding(2);
             MaximizeBox = false;
             Name = "MainWindow";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Aptos VPN Client";
             FormClosing += MainWindow_FormClosing;
             Load += MainWindow_Load;

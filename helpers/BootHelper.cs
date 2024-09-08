@@ -20,12 +20,13 @@ namespace DemoUI.helpers
             }
         }
 
-        private static void firstBootVPNClient()
+        private static async void firstBootVPNClient()
         {
             string privateKey = AptosAccessor.createNewAccount();
             UserDO user = new UserDO();
             user.privateKey = privateKey;
             LiteDBAccessor.insertUserInfo(user);
+            AptosAccessor.requestGasFromFaucet();
         }
     }
 }

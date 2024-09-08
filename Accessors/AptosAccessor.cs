@@ -13,6 +13,9 @@ using Newtonsoft.Json;
 using Transaction = Aptos.Unity.Rest.Model.Transaction;
 using System.Security.Cryptography.X509Certificates;
 using static NBitcoin.Scripting.OutputDescriptor;
+using Mirage.Aptos.SDK;
+using Account = Aptos.Accounts.Account;
+using Newtonsoft.Json.Linq;
 
 namespace DemoUI.Accessors
 {
@@ -81,6 +84,77 @@ namespace DemoUI.Accessors
             Account userAcc = new Account(privatekey, publicKey);
             userAcc.PrivateKey.KeyBytes = keybytes;
             return userAcc.Sign(Encoding.ASCII.GetBytes(toSign)).ToString();
+        }
+
+        public static string getPublicKey()
+        {
+            string privateKeyStr = LiteDBAccessor.getPrivatekey();
+            PrivateKey privatekey = new PrivateKey(privateKeyStr);
+            if (privateKeyStr == null)
+            {
+                return "setting up account";
+            }
+            Aptos.Accounts.PublicKey publicKey = privatekey.PublicKey();
+            Account userAcc = new Account(privatekey, publicKey);
+            return userAcc.AccountAddress.ToString();
+        }
+
+        public static async void requestGasFromFaucet()
+        {
+            string address = getPublicKey();
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri("https://faucet.testnet.aptoslabs.com/mint?amount=10000000&address=" + address),
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                //response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(body);
+            }
+        }
+
+        public static async Task<string> getAptQuantity()
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://api.testnet.aptoslabs.com/v1/accounts/" + getPublicKey() +  "/resources"),
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                string body = await response.Content.ReadAsStringAsync();
+                JArray array = JArray.Parse(body);
+                foreach (JObject obj in array.Children<JObject>())
+                {
+                    if(obj["type"].ToString() == "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>")
+                    {
+                        return obj["data"]["coin"]["value"].ToString();
+                    }
+                }
+                return "0";
+            }
+            /*
+             * [{
+                "type": "0x1::account::Account",
+                "data":{"authentication_key": "0xbd2497fc645660a5c4a3e0739c0d5fb7ca68e2f717d2ac35280054c907b1db6e", "coin_register_events":{"counter": "1",…}
+                },
+                {
+                "type": "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
+                "data":{
+                "coin":{
+                "value": "299942300"
+                },
+                "deposit_events":{"counter": "4", "guid":{"id":{"addr": "0xbd2497fc645660a5c4a3e0739c0d5fb7ca68e2f717d2ac35280054c907b1db6e",…},
+                "frozen": false,
+                "withdraw_events":{"counter": "1", "guid":{"id":{"addr": "0xbd2497fc645660a5c4a3e0739c0d5fb7ca68e2f717d2ac35280054c907b1db6e",…}
+                }
+                }]
+            */
         }
     }
 }

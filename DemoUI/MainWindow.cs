@@ -45,6 +45,7 @@ namespace DemoUI
             transferUpdateThread = new Thread(new ThreadStart(tailTransfer));
             populateVPNProviders(vpnList);
             BootHelper.BootVPNClient();
+            setInfoBox();
         }
 
         private async void populateVPNProviders(DataGridView vpnList)
@@ -215,7 +216,7 @@ namespace DemoUI
             connectButton.Enabled = false;
             try
             {
-                if ( selectedVPNProvider == null)
+                if (selectedVPNProvider == null)
                 {
                     return;
                 }
@@ -261,6 +262,18 @@ namespace DemoUI
                 sb.Append("Total: " + selectedRowCount.ToString());
                 //MessageBox.Show(sb.ToString(), "Selected Rows");
             }
+        }
+
+        private void vPNProviderBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public async void setInfoBox()
+        {
+            aptosInfoBox.Text = "Account address: \n" + AptosAccessor.getPublicKey() + "\n\n";
+            double aptQuantity = double.Parse(await AptosAccessor.getAptQuantity()) / Math.Pow(10, 8); 
+            aptosInfoBox.Text += "APT quantity: " + aptQuantity;
         }
     }
 }
