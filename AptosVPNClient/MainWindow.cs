@@ -13,16 +13,16 @@ using System.IO.Pipes;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Security.AccessControl;
-using DemoUI.Models;
-using DemoUI.Accessors;
+using AptosVPNClient.Models;
+using AptosVPNClient.Accessors;
 using System.Collections.Generic;
-using DemoUI.helpers;
+using AptosVPNClient.helpers;
 
-namespace DemoUI
+namespace AptosVPNClient
 {
     public partial class MainWindow : Form
     {
-        private static readonly string userDirectory = "C:\\";//Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "Config"); //TODO: put in Program Files in real code.
+        private static readonly string userDirectory = "C:\\"; //TODO: put in Program Files in production code.
         private static readonly string configFile = Path.Combine(userDirectory, "aptosVPN.conf");
         private static readonly string logFile = Path.Combine(userDirectory, "log.bin");
 

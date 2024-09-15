@@ -1,4 +1,4 @@
-﻿using DemoUI.Models;
+﻿using AptosVPNClient.Models;
 using LiteDB;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoUI.Accessors
+namespace AptosVPNClient.Accessors
 {
     public static class LiteDBAccessor
     {

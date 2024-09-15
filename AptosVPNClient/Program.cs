@@ -8,7 +8,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace DemoUI
+namespace AptosVPNClient
 {
     static class Program
     {

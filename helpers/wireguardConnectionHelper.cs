@@ -1,12 +1,12 @@
-﻿using DemoUI.Accessors;
-using DemoUI.Models;
+﻿using AptosVPNClient.Accessors;
+using AptosVPNClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoUI.helpers
+namespace AptosVPNClient.helpers
 {
     internal static class wireguardConnectionHelper
     {

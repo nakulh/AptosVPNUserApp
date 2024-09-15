@@ -3,13 +3,13 @@
  * Copyright (C) 2019-2022 WireGuard LLC. All Rights Reserved.
  */
 
-using DemoUI.Accessors;
-using DemoUI.Models;
+using AptosVPNClient.Accessors;
+using AptosVPNClient.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace DemoUI
+namespace AptosVPNClient
 {
     partial class MainWindow
     {

@@ -11,7 +11,7 @@ using System.Text;
 using System.Net.Http;
 using Transaction = Aptos.Unity.Rest.Model.Transaction;
 using Org.BouncyCastle.Asn1.Ocsp;
-using DemoUI.Models;
+using AptosVPNClient.Models;
 using System.Threading.Tasks;
 
 namespace Aptos.Unity.Rest

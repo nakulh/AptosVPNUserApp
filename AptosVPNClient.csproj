@@ -3,12 +3,12 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
-    <RootNamespace>DemoUI</RootNamespace>
+    <RootNamespace>AptosVPNClient</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
-    <AssemblyName>demo-client</AssemblyName>
+    <AssemblyName>AptosVPNClient</AssemblyName>
     <Platforms>x64;x86</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationManifest>DemoUI\app.manifest</ApplicationManifest>
+    <ApplicationManifest>AptosVPNClient\app.manifest</ApplicationManifest>
     <PlatformTarget>x86</PlatformTarget>
     <Nullable>annotations</Nullable>
   </PropertyGroup>

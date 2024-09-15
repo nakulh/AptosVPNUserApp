@@ -18,7 +18,7 @@ using Account = Aptos.Accounts.Account;
 using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
 
-namespace DemoUI.Accessors
+namespace AptosVPNClient.Accessors
 {
     internal class AptosAccessor
     {

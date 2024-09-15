@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-using DemoUI.Models;
+using AptosVPNClient.Models;
 using System.Windows.Forms;
 
-namespace DemoUI.Accessors
+namespace AptosVPNClient.Accessors
 {
     public static class VPNIndexerAccessor
     {

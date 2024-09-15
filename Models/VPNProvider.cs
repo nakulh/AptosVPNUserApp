@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DemoUI.Models
+namespace AptosVPNClient.Models
 {
     public class VPNProvider
     {

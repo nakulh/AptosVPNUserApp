@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DemoUI.Models;
+using AptosVPNClient.Models;
 using System.Net.Http;
 using System.Security.Cryptography.Xml;
 using Newtonsoft.Json;
 
-namespace DemoUI.Accessors
+namespace AptosVPNClient.Accessors
 {
     public static class VPNProviderAccessor
     {
