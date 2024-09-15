@@ -1,6 +1,6 @@
 # Example WireGuard Demo Client for Windows
 
-This is a simple client for demo.wireguard.com, which brings up WireGuard tunnels using the [embeddable-dll-service](https://git.zx2c4.com/wireguard-windows/about/embeddable-dll-service/README.md).
+Aptos VPN client app based on wireguard's embeddable dll service. Fully open source and non compute intensive
 
 ## Building
 
