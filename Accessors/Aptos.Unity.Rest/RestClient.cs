@@ -49,8 +49,7 @@ namespace Aptos.Unity.Rest
         /// <param name="callback">Callback function used after response is received with the JSON response.</param>
         /// <param name="SignedTransaction">The signed transaction.</param>
         /// <returns></returns>
-        public void SubmitBCSTransaction(
-            Action<string, ResponseInfo> callback,
+        public async Task<ResponseInfo> SubmitBCSTransaction(
             SignedTransaction SignedTransaction
         )
         {
@@ -58,9 +57,7 @@ namespace Aptos.Unity.Rest
 
             HttpContent content = new ByteArrayContent(SignedTransaction.Bytes());
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x.aptos.signed_transaction+bcs");
-            var apiRes = httpClient.PostAsync(submitTxnEndpoint, content);
-            apiRes.Wait();
-            var apiData = apiRes.Result;
+            var apiData = await httpClient.PostAsync(submitTxnEndpoint, content);
 
             ResponseInfo responseInfo = new ResponseInfo();
             if (apiData != null && apiData.IsSuccessStatusCode)
@@ -70,14 +67,13 @@ namespace Aptos.Unity.Rest
 
                 responseInfo.status = ResponseInfo.Status.Success;
                 responseInfo.message = response.Result.ToString();
-                callback(response.Result.ToString(), responseInfo);
             }
             else
             {
                 responseInfo.status = ResponseInfo.Status.Failed;
                 responseInfo.message = "Error while submitting BCS transaction. " + apiData.RequestMessage.ToString();
-                callback(null, responseInfo);
             }
+            return responseInfo;
         }
 
         public async Task<bool> WaitForTransaction(string txnHash)
@@ -147,94 +143,74 @@ namespace Aptos.Unity.Rest
             return true;
         }
 
-        public void CreateBCSTransaction(
-            Action<RawTransaction> Callback,
+        public async Task<RawTransaction> CreateBCSTransaction(
             Account Sender,
             BCS.TransactionPayload payload)
         {
-            string sequenceNumber = "";
             ResponseInfo responseInfo = new ResponseInfo();
 
-            GetAccountSequenceNumber((_sequenceNumber, _responseInfo) => {
-                sequenceNumber = _sequenceNumber;
-                responseInfo = _responseInfo;
-                if (responseInfo.status != ResponseInfo.Status.Success)
-                {
-                    throw new Exception("Unable to get sequence number for: " + Sender.AccountAddress + ".\n" + responseInfo.message);
-                }
+            string sequenceNumber = await GetAccountSequenceNumber(Sender.AccountAddress);
+            if (sequenceNumber == null)
+            {
+                throw new Exception("Unable to get sequence number for: " + Sender.AccountAddress + ".\n" + responseInfo.message);
+            }
+            ulong expirationTimestamp = ((ulong)(DateTime.Now.ToUnixTimestamp() + Constants.EXPIRATION_TTL));
 
-                ulong expirationTimestamp = ((ulong)(DateTime.Now.ToUnixTimestamp() + Constants.EXPIRATION_TTL));
-
-                RawTransaction rawTxn = new RawTransaction(
-                    Sender.AccountAddress,
-                    int.Parse(sequenceNumber),
-                    payload,
-                    ClientConfig.MAX_GAS_AMOUNT,
-                    ClientConfig.GAS_UNIT_PRICE,
-                    expirationTimestamp,
-                    (int)this.ChainId
-                );
-
-                Callback(rawTxn);
-            }, Sender.AccountAddress);
-
-
+            RawTransaction rawTxn = new RawTransaction(
+                Sender.AccountAddress,
+                int.Parse(sequenceNumber),
+                payload,
+                ClientConfig.MAX_GAS_AMOUNT,
+                ClientConfig.GAS_UNIT_PRICE,
+                expirationTimestamp,
+                (int)this.ChainId
+            );
+            return rawTxn;
         }
 
-        public void CreateBCSSignedTransaction(
-            Action<SignedTransaction> Callback,
+        public async Task<SignedTransaction> CreateBCSSignedTransaction(
             Account Sender,
             BCS.TransactionPayload Payload
         )
         {
 
-            CreateBCSTransaction((rawTransaction) => {
-                Accounts.Signature signature = Sender.Sign(rawTransaction.Keyed());
-                Authenticator authenticator = new Authenticator(
-                    new Ed25519Authenticator(Sender.PublicKey, signature)
-                );
-
-                Callback(new SignedTransaction(rawTransaction, authenticator));
-            }, Sender, Payload);
-
-            
+            RawTransaction rawTransaction = await CreateBCSTransaction(Sender, Payload);
+            Accounts.Signature signature = Sender.Sign(rawTransaction.Keyed());
+            Authenticator authenticator = new Authenticator(
+                new Ed25519Authenticator(Sender.PublicKey, signature)
+            );
+            return new SignedTransaction(rawTransaction, authenticator);
         }
 
-        public void GetAccountSequenceNumber(Action<string, ResponseInfo> callback, AccountAddress accountAddress)
+        public async Task<string> GetAccountSequenceNumber(AccountAddress accountAddress)
         {
-            GetAccount((_accountData, _responseInfo) => {
-                if (_responseInfo.status != ResponseInfo.Status.Success)
-                {
-                    callback(null, _responseInfo);
-                }
-                string sequenceNumber = _accountData.SequenceNumber;
-                callback(sequenceNumber, _responseInfo);
-            }, accountAddress);
+            AccountData accData = await GetAccount(accountAddress);
+            if (accData == null)
+            {
+                return null;
+            }
+            return accData.SequenceNumber;
         }
 
-        public void GetAccount(Action<AccountData, ResponseInfo> callback, AccountAddress accountAddress)
+        public async Task<AccountData> GetAccount(AccountAddress accountAddress)
         {
             string accountsURL = Endpoint + "/accounts/" + accountAddress.ToString();
             Uri accountsURI = new Uri(accountsURL);
-            var apiRes = httpClient.GetAsync(accountsURI);
-            apiRes.Wait();
-            var apiData = apiRes.Result;
+            var apiData = await httpClient.GetAsync(accountsURI);
 
             ResponseInfo responseInfo = new ResponseInfo();
             if (apiData != null && apiData.IsSuccessStatusCode)
             {
                 responseInfo.status = ResponseInfo.Status.Success;
                 responseInfo.message = apiData.RequestMessage.ToString();
-                var processedData = apiData.Content.ReadAsAsync<AccountData>();
-                processedData.Wait();
-                callback(processedData.Result, responseInfo);
+                AccountData processedData = await apiData.Content.ReadAsAsync<AccountData>();
+                return processedData;
             }
             else
             {
                 responseInfo.status = ResponseInfo.Status.Failed;
                 responseInfo.message = apiData.RequestMessage.ToString();
-
-                callback(null, responseInfo);
+                return null;
             }
         }
 

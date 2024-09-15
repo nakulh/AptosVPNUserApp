@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using DemoUI.Models;
+using System.Windows.Forms;
 
 namespace DemoUI.Accessors
 {
@@ -14,11 +15,17 @@ namespace DemoUI.Accessors
         private static readonly string vpnIndexerAddress = "http://localhost:3000/";
         public static async Task<List<VPNProvider>> GetVPNProviders()
         {
-            var apiData = await httpClient.GetAsync(vpnIndexerAddress + "getListings");
-            if (apiData != null && apiData.IsSuccessStatusCode) {
-                var processedData = apiData.Content.ReadAsAsync<List<VPNProvider>>();
-                processedData.Wait();
-                return processedData.Result;
+            try
+            {
+                var apiData = await httpClient.GetAsync(vpnIndexerAddress + "getListings");
+                if (apiData != null && apiData.IsSuccessStatusCode)
+                {
+                    var processedData = apiData.Content.ReadAsAsync<List<VPNProvider>>();
+                    processedData.Wait();
+                    return processedData.Result;
+                }
+            } catch (Exception ex) {
+                MessageBox.Show("unable to connect with VPN indexer node");
             }
             return new List<VPNProvider>();
         }

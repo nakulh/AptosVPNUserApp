@@ -10,7 +10,7 @@ namespace DemoUI.helpers
 {
     internal static class wireguardConnectionHelper
     {
-        private static readonly string connectionStringDivider = "\r\n";
+        private static readonly string connectionStringDivider = "\n";
         public static async Task<string> getVPNConnectionString(VPNProvider vpnProvider)
         {
             if (vpnProvider == null)
@@ -19,23 +19,24 @@ namespace DemoUI.helpers
             }
             string connectionString = "";
             UserDO user = LiteDBAccessor.getUserInfo();
-            if (user.lastConnectedVPN.objectId == vpnProvider.objectId && DateTime.Compare(DateTime.Now, user.vpnExpiryTime) < 0)
+            string vpnIp = vpnProvider.address.Split(':')[0] + ":5000"; //assuming 5000 port, this should be made configurable in the future but lots of changes needed
+            if (user.lastConnectedVPN != null && user.lastConnectedVPN.objectId == vpnProvider.objectId && DateTime.Compare(DateTime.Now, user.vpnExpiryTime) < 0)
             {
                 Console.WriteLine("connecting to previous vpn");
-                connectionString = await getConnectionString(user.lastTransactionHash, vpnProvider.address);
+                connectionString = await getConnectionString(user.lastTransactionHash, vpnIp);
             }
             else
             {
                 string transactionHash = await AptosAccessor.purchaseVPN(vpnProvider.objectId, user.privateKey);
-                connectionString = await getConnectionString(transactionHash, vpnProvider.address);
+                connectionString = await getConnectionString(transactionHash, vpnIp);
             }
             return modifyConnectionString(connectionString, vpnProvider.address);
         }
 
-        private static Task<string> getConnectionString(string transactionHash, string address)
+        private static async Task<string> getConnectionString(string transactionHash, string address)
         {
             // first sign transaction
-            return VPNProviderAccessor.getVPNConnection(address, transactionHash);
+            return await VPNProviderAccessor.getVPNConnection(address, transactionHash);
         }
 
         private static string modifyConnectionString(string connectionString, string vpnProviderAddress) 

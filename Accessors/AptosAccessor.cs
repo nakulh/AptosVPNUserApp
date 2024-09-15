@@ -16,6 +16,7 @@ using static NBitcoin.Scripting.OutputDescriptor;
 using Mirage.Aptos.SDK;
 using Account = Aptos.Accounts.Account;
 using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
 
 namespace DemoUI.Accessors
 {
@@ -36,23 +37,31 @@ namespace DemoUI.Accessors
             userAcc.PrivateKey.KeyBytes = keybytes;
             Aptos.BCS.TransactionPayload payload = GetPurchaseVPNPayload(vpnProviderObjectId);
 
-            String transHash = "";
-
-            aptosRestClient.CreateBCSSignedTransaction((signedTransaction) =>
+            try
             {
-                aptosRestClient.SubmitBCSTransaction(async (responseString, responseInfo) =>
+                SignedTransaction signedTransaction = await aptosRestClient.CreateBCSSignedTransaction(userAcc, payload);
+                ResponseInfo transactionInfo = await aptosRestClient.SubmitBCSTransaction(signedTransaction);
+                string responseString = transactionInfo.message;
+                if (transactionInfo.status == ResponseInfo.Status.Failed)
                 {
-                    Transaction finalTransaction = JsonConvert.DeserializeObject<Transaction>(responseString, new TransactionConverter());
-                    if (finalTransaction != null) {
-                        bool isPendingOrFailed = await aptosRestClient.WaitForTransaction(finalTransaction.Hash);
-                        if ( !isPendingOrFailed)
-                        {
-                            transHash = finalTransaction.Hash;
-                        }
+                    MessageBox.Show("unable to submit Aptos transaction");
+                    return null;
+                }
+                Transaction finalTransaction = JsonConvert.DeserializeObject<Transaction>(responseString, new TransactionConverter());
+                if (finalTransaction != null)
+                {
+                    bool isPendingOrFailed = await aptosRestClient.WaitForTransaction(finalTransaction.Hash);
+                    if (!isPendingOrFailed)
+                    {
+                        return finalTransaction.Hash;
                     }
-                }, signedTransaction);
-            }, userAcc, payload);
-            return transHash;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("unable to submit Aptos transaction, please try again");
+            }
+            return null;
         }
 
         private static Aptos.BCS.TransactionPayload GetPurchaseVPNPayload(string vpnProviderObjectId)
@@ -83,7 +92,8 @@ namespace DemoUI.Accessors
             Aptos.Accounts.PublicKey publicKey = privatekey.PublicKey();
             Account userAcc = new Account(privatekey, publicKey);
             userAcc.PrivateKey.KeyBytes = keybytes;
-            return userAcc.Sign(Encoding.ASCII.GetBytes(toSign)).ToString();
+            byte[] toSignByte = Encoding.ASCII.GetBytes(toSign);
+            return userAcc.Sign(toSignByte).ToString();
         }
 
         public static string getPublicKey()

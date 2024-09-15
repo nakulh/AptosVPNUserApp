@@ -15,20 +15,20 @@ namespace DemoUI.Accessors
         private static readonly HttpClient httpClient = new HttpClient();
         public static async Task<string> getVPNConnection(string address, string transactionHash)
         {
+            address = "http://" + address;
             string privateKey = LiteDBAccessor.getPrivatekey();
             string hexSignature = AptosAccessor.getHexSignature(transactionHash, privateKey);
             var dataToPost = JsonConvert.SerializeObject(new
             {
                 signature = hexSignature,
-                transactionHash = transactionHash,
+                transactionHash
             });
             var content = new StringContent(dataToPost, Encoding.UTF8, "application/json");
             var apiData = await httpClient.PostAsync(address + "/provideAccess", content);
             if (apiData != null && apiData.IsSuccessStatusCode)
             {
-                var processedData = apiData.Content.ReadAsAsync<string>();
-                processedData.Wait();
-                return processedData.Result;
+                var processedData = await apiData.Content.ReadAsStringAsync();
+                return processedData;
             }
             return "";
         }
