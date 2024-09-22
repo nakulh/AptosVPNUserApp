@@ -12,7 +12,7 @@ namespace AptosVPNClient.Accessors
     public static class VPNIndexerAccessor
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private static readonly string vpnIndexerAddress = "http://localhost:3000/";
+        private static readonly string vpnIndexerAddress = "http://3.96.190.37:3000/";
         public static async Task<List<VPNProvider>> GetVPNProviders()
         {
             try
