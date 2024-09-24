@@ -11,7 +11,7 @@ namespace AptosVPNClient.helpers
     internal static class wireguardConnectionHelper
     {
         private static readonly string connectionStringDivider = "\n";
-        public static async Task<string> getVPNConnectionString(VPNProvider vpnProvider)
+        public static async Task<string> getVPNConnectionString(VPNProvider vpnProvider, System.Windows.Forms.TextBox logBox)
         {
             if (vpnProvider == null)
             {
@@ -23,11 +23,14 @@ namespace AptosVPNClient.helpers
             if (user.lastConnectedVPN != null && user.lastConnectedVPN.objectId == vpnProvider.objectId && DateTime.Compare(DateTime.Now, user.vpnExpiryTime) < 0)
             {
                 Console.WriteLine("connecting to previous vpn");
+                logBox.Text += "\n Already bought subscription found, reusing that";
                 connectionString = await getConnectionString(user.lastTransactionHash, vpnIp);
             }
             else
             {
                 string transactionHash = await AptosAccessor.purchaseVPN(vpnProvider.objectId, user.privateKey);
+                logBox.Text += "\n Signed contract with hash: " + transactionHash;
+                logBox.Text += "\n Getting connection string from VPN provider";
                 connectionString = await getConnectionString(transactionHash, vpnIp);
             }
             return modifyConnectionString(connectionString, vpnProvider.address);

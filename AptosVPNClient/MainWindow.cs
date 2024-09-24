@@ -197,7 +197,6 @@ namespace AptosVPNClient
 
         private async void connectButton_Click(object sender, EventArgs e)
         {
-            //string transHash = await AptosAccessor.purchaseVPN("0x335710c6e8b956449b2aa563b5167925ed9466d75ec02e9f929f9354dd57f73f");
             if (connected)
             {
                 connectButton.Enabled = false;
@@ -210,6 +209,7 @@ namespace AptosVPNClient
                 connectButton.Text = "&Connect";
                 connectButton.Enabled = true;
                 connected = false;
+                logBox.Text += "\n Disconnected from VPN";
                 return;
             }
 
@@ -220,9 +220,10 @@ namespace AptosVPNClient
                 {
                     return;
                 }
-                var config = await wireguardConnectionHelper.getVPNConnectionString(selectedVPNProvider);
+                logBox.Text += "\n Signing contract on Aptos to buy VPN subscription for a day";
+                var config = await wireguardConnectionHelper.getVPNConnectionString(selectedVPNProvider, logBox);
+                logBox.Text += "\n Connection string received";
                 await File.WriteAllBytesAsync(configFile, Encoding.UTF8.GetBytes(config));
-                //String customConfig = Path.Combine(userDirectory, "nakul-ios.conf");
                 await Task.Run(() => Tunnel.Service.Add(configFile, true));
                 connected = true;
                 connectButton.Text = "&Disconnect";
@@ -272,8 +273,14 @@ namespace AptosVPNClient
         public async void setInfoBox()
         {
             aptosInfoBox.Text = "Account address: \n" + AptosAccessor.getPublicKey() + "\n\n";
-            double aptQuantity = double.Parse(await AptosAccessor.getAptQuantity()) / Math.Pow(10, 8); 
-            aptosInfoBox.Text += "APT quantity: " + aptQuantity;
+            try
+            {
+                double aptQuantity = double.Parse(await AptosAccessor.getAptQuantity()) / Math.Pow(10, 8);
+                aptosInfoBox.Text += "APT quantity: " + aptQuantity;
+            }
+            catch (Exception ex) {
+                aptosInfoBox.Text += "New aptos account created and requesting gas";
+            }
         }
     }
 }

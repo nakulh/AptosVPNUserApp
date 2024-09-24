@@ -47,13 +47,13 @@ namespace AptosVPNClient
             logBox = new TextBox();
             aptosInfoBox = new RichTextBox();
             vpnList = new DataGridView();
+            vPNProviderBindingSource = new BindingSource(components);
             nameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             priceDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             countryDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             addressDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             sellerDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             objectIdDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            vPNProviderBindingSource = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)vpnList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)vPNProviderBindingSource).BeginInit();
             SuspendLayout();
@@ -160,6 +160,11 @@ namespace AptosVPNClient
             vpnList.TabIndex = 7;
             vpnList.CellContentClick += dataGridView1_CellContentClick;
             // 
+            // vPNProviderBindingSource
+            // 
+            vPNProviderBindingSource.DataSource = typeof(VPNProvider);
+            vPNProviderBindingSource.CurrentChanged += vPNProviderBindingSource_CurrentChanged;
+            // 
             // nameDataGridViewTextBoxColumn
             // 
             nameDataGridViewTextBoxColumn.DataPropertyName = "name";
@@ -172,7 +177,7 @@ namespace AptosVPNClient
             // priceDataGridViewTextBoxColumn
             // 
             priceDataGridViewTextBoxColumn.DataPropertyName = "price";
-            priceDataGridViewTextBoxColumn.HeaderText = "Price in APT/24hrs";
+            priceDataGridViewTextBoxColumn.HeaderText = "Price in Octas/24hrs";
             priceDataGridViewTextBoxColumn.MinimumWidth = 8;
             priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
             priceDataGridViewTextBoxColumn.ReadOnly = true;
@@ -214,11 +219,6 @@ namespace AptosVPNClient
             objectIdDataGridViewTextBoxColumn.Name = "objectIdDataGridViewTextBoxColumn";
             objectIdDataGridViewTextBoxColumn.ReadOnly = true;
             objectIdDataGridViewTextBoxColumn.Width = 740;
-            // 
-            // vPNProviderBindingSource
-            // 
-            vPNProviderBindingSource.DataSource = typeof(VPNProvider);
-            vPNProviderBindingSource.CurrentChanged += vPNProviderBindingSource_CurrentChanged;
             // 
             // MainWindow
             // 

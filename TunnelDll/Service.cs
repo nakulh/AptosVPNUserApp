@@ -15,8 +15,8 @@ namespace Tunnel
 {
     public class Service
     {
-        private const string LongName = "WireGuard Demo Box";
-        private const string Description = "Demonstration tunnel for testing WireGuard";
+        private const string LongName = "Aptos VPN wireguard tunnel";
+        private const string Description = "Aptos VPN wireguard tunnel";
 
         [DllImport("tunnel.dll", EntryPoint = "WireGuardTunnelService", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool Run([MarshalAs(UnmanagedType.LPWStr)] string configFile);

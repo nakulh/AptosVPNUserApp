@@ -10,23 +10,23 @@ namespace AptosVPNClient.helpers
 {
     public static class BootHelper
     {
-        public static void BootVPNClient()
+        public static async Task BootVPNClient()
         {
             UserDO user = LiteDBAccessor.getUserInfo();
             if (user == null || string.IsNullOrEmpty(user.privateKey))
             {
                 Console.WriteLine("First boot so creating new user");
-                firstBootVPNClient();
+                await firstBootVPNClient();
             }
         }
 
-        private static async void firstBootVPNClient()
+        private static async Task firstBootVPNClient()
         {
             string privateKey = AptosAccessor.createNewAccount();
             UserDO user = new UserDO();
             user.privateKey = privateKey;
             LiteDBAccessor.insertUserInfo(user);
-            AptosAccessor.requestGasFromFaucet();
+            await AptosAccessor.requestGasFromFaucet();
         }
     }
 }

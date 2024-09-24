@@ -109,14 +109,14 @@ namespace AptosVPNClient.Accessors
             return userAcc.AccountAddress.ToString();
         }
 
-        public static async void requestGasFromFaucet()
+        public static async Task requestGasFromFaucet()
         {
             string address = getPublicKey();
             var client = new HttpClient();
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri("https://faucet.testnet.aptoslabs.com/mint?amount=10000000&address=" + address),
+                RequestUri = new Uri("https://faucet.testnet.aptoslabs.com/mint?amount=100000000&address=" + address),
             };
             using (var response = await client.SendAsync(request))
             {
